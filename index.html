@@ -22,11 +22,14 @@
     <div class="slides">
 
       <section data-transition="fade-in convex-out">
-        <h3>2022-07-07</h3>
-        <h1>C++ on Sea</h1>
-        <h2>Contractual Disappointment in C++</h2>
-        <p><a
-            href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html</a>
+        <h2>Contractual
+            Disappointment</h2>
+        <h2>in C++</h2>
+        <a
+          href="https://johnmcfarlane.github.io/cpponsea-2022">johnmcfarlane.github.io/cpponsea-2022</a>
+        </p>
+        <h4>2022-07-07</h4>
+        <h3><a href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">C++ on Sea</a></h3>
       </section>
 
       <section data-transition="convex-in slide-out">
@@ -35,36 +38,25 @@
         <p class="fragment">Software Engineer, Ennis, Co Clare</p>
         <p class="fragment">
           <img width="80" src="Octocat.png" alt="GitHub logo" />
-          <a href="https://github.com/johnmcfarlane/accu-2022-examples/">github.com/johnmcfarlane/accu-2022-examples</a>
+          <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a>
         </p>
         <p class="fragment">
           <img width="80" src="2021%20Twitter%20logo%20-%20blue.png" alt="Twitter logo" />
           <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a>
         </p>
         <p>&nbsp;</p>
-        <a class="fragment"
-          href="https://johnmcfarlane.github.io/cpponsea-2022">johnmcfarlane.github.io/cpponsea-2022</a>
       </section>
 
       <section data-transition="slide-in convex-out">
         <h3>Background</h3>
         <p>
-          <span class="fragment">Work:</span>
-          <span class="fragment">games,</span>
-          <span class="fragment">servers,</span>
-          <span class="fragment">automotive</span>
+          <span class="fragment">Work: games, servers, automotive</span>
         </p>
         <p>
-          <span class="fragment">Fun:</span>
-          <span class="fragment">numerics,</span>
-          <span class="fragment">workflow,</span>
-          <span class="fragment">word games</span>
+          <span class="fragment">Fun: numerics, workflow, word games</span>
         </p>
         <p>
-          <span class="fragment">C++:</span>
-          <span class="fragment">low latency,</span>
-          <span class="fragment">numerics,</span>
-          <span class="fragment">contracts</span>
+          <span class="fragment">C++: low latency, numerics, contracts</span>
         </p>
         <aside class="notes">
           <p>all of these subjects have influenced my attitude towards run-time disappointment</p>
@@ -461,9 +453,9 @@
           <li class="fragment">are introduced through interfaces with the real world, e.g.:
             <ul>
               <li class="fragment"><code>std::filesystem</code> and
-                <code>std::string</code> are UI elements!
+                <code>std::string</code> are UI elements
               </li>
-              <li class="fragment"><code>std::chrono</code> models the real world and similarly 'messy'.
+              <li class="fragment"><code>std::chrono</code> models the real world and similarly 'messy'
               </li>
             </ul>
           </li>
@@ -510,11 +502,11 @@
         <div style="display: flex">
           <div style="flex: 50%">
             <h3 class="fragment">resource</h3>
-            <ul>
-              <li class="fragment">missing/read-only file</li>
-              <li class="fragment">missing hardware device</li>
-              <li class="fragment">network address already in used</li>
-              <li class="fragment">
+            <ul class="fragment">
+              <li>missing/read-only file</li>
+              <li>missing hardware device</li>
+              <li>network address already in used</li>
+              <li>
                 (Generally API errors you weren't expecting
                 (unless you read the docs
                 (which you didn't.)))
@@ -523,12 +515,12 @@
           </div>
           <div style="flex: 50%">
             <h3 class="fragment">ill-formed input</h3>
-            <ul>
-              <li class="fragment">file too short</li>
-              <li class="fragment">file doesn't conform to format, e.g. JSON</li>
-              <li class="fragment">parameter is out of range</li>
-              <li class="fragment">unexpected device type</li>
-              <li class="fragment">unexpected network packet size</li>
+            <ul class="fragment">
+              <li>file too short</li>
+              <li>file doesn't conform to format, e.g. JSON</li>
+              <li>parameter is out of range</li>
+              <li>unexpected device type</li>
+              <li>unexpected network packet size</li>
             </ul>
           </div>
         </div>
@@ -536,20 +528,28 @@
 
       <section data-transition="convex-in slide-out">
         <h3>Error Handling</h3>
-        <ul>
-          <li class="fragment">
-            Recap: <em>client violations</em> of the <em>End User Contract</em> should be handled by the program
-          </li>
-          <li class="fragment">
-            The user needs to know about them in order to decide what to do next.
-          </li>
-          <li class="fragment">
-            The software must inform the user to this end.
-          </li>
-          <li class="fragment">
-            Be considerate!
-          </li>
-        </ul>
+        <p>Program should handle <em>client violations</em> of the <em>End User Contract</em></p>
+        <div style="display: flex">
+          <div style="flex: 50%">
+            <h3 class="fragment">halt</h3>
+            <ul class="fragment">
+              <li>When an error occurs, the request should fail.</li>
+              <li>Attempting to continue 'helpfully' is unwise.</li>
+              <li>The failure should be prominent (e.g.
+                <code>std::abort()</code>).
+              </li>
+            </ul>
+          </div>
+          <div style="flex: 50%">
+            <h3 class="fragment">help</h3>
+            <ul class="fragment">
+              <li>Explain what failed.</li>
+              <li>Explain how/why.</li>
+              <li>Be thoughtful about details.</li>
+              <li>What will help the user succeed next time?</li>
+            </ul>
+          </div>
+        </div>
       </section>
 
       <section data-transition="slide-in slide-out">
@@ -1284,28 +1284,29 @@ int main(int argc, char* argv[])
 
       <section data-transition="slide-in slide-out">
         <h3>Shift Left</h3>
-        <span style="text-align: left">🡠 early/cheap</span> --- detection --- <span style="text-align: right">late/expensive 🡢</p>
-        <ul>
-          <li class="fragment">Bug-hostile APIs, languages and tools make the bug inconceivable.</li>
+        <span style="text-align: left">🡠 early/cheap</span> --- detection --- <span
+          style="text-align: right">late/expensive 🡢</p>
           <ul>
-            <li class="fragment">Compilers, linters and static analysers can flag <span
-                style="text-decoration: underline wavy red">potential bugs</span>.</li>
+            <li class="fragment">Bug-hostile APIs, languages and tools make the bug inconceivable.</li>
             <ul>
-              <div class="fragment">⬇ Instrumentation detects bugs in executing code.</div>
-              <div class="fragment">⬇ Fuzz testing and coverage metrics guide testing.</div>
-              <li class="fragment">
-                Automated testing exercises the code.
-              </li>
+              <li class="fragment">Compilers, linters and static analysers can flag <span
+                  style="text-decoration: underline wavy red">potential bugs</span>.</li>
               <ul>
-                <li class="fragment">Bugs found by human testers are more costly.</li>
+                <div class="fragment">⬇ Instrumentation detects bugs in executing code.</div>
+                <div class="fragment">⬇ Fuzz testing and coverage metrics guide testing.</div>
+                <li class="fragment">
+                  Automated testing exercises the code.
+                </li>
                 <ul>
-                  <li class="fragment">Bugs found by users/customers are most costly.</li>
+                  <li class="fragment">Bugs found by human testers are more costly.</li>
+                  <ul>
+                    <li class="fragment">Bugs found by users/customers are most costly.</li>
+                  </ul>
                 </ul>
-                </ul>
+              </ul>
             </ul>
+            </li>
           </ul>
-          </li>
-        </ul>
       </section>
 
       <section data-transition="slide-in slide-out">
