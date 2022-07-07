@@ -1118,6 +1118,14 @@ int main(int argc, char* argv[])
         </div>
       </section>
 
+      <section data-transition="slide-in slide-out">
+        <h3>Undefined Behavior Sanitizer (UBSan)</h3>
+        <div><a href="https://godbolt.org/z/PdT35e4Ya">
+            <img width="840" src="divide-by-zero_sanitize.png"
+              alt="A divide-by-zero bugs caught twice by tools in Compiler Explorer" />
+          </a></div>
+      </section>
+
       <section data-transition="slide-in fade-out">
         <h3>Example 2</h3>
         <div class="wings">
@@ -1500,6 +1508,14 @@ int main(int argc, char* argv[])
         </ul>
       </section>
 
+      <section data-transition="fade-in slide-out">
+        <h3>Remember Example 1?</h3>
+        <div><a href="https://godbolt.org/z/PdT35e4Ya">
+            <img width="840" src="divide-by-zero_sanitize.png"
+              alt="A divide-by-zero bugs caught twice by tools in Compiler Explorer" />
+          </a></div>
+      </section>
+
       <section data-transition="slide-in slide-out">
         <h3>Trigger Warning: This Assertion Triggers UB!</h3>
         <pre data-id="code-animation"><code class="cpp"
@@ -1533,7 +1549,7 @@ int main(int argc, char* argv[])
         <h3>Simplicity, Uniformity, Versatility</h3>
         <ul>
           <li class="fragment">The choice of how to handle bugs lies in the hands of the developer using the code.</li>
-          <li class="fragment">Most UB ('good' UB?) is evidence of bugs.</li>
+          <li class="fragment">UB is a strong indicator of bugs.</li>
           <li class="fragment">All bugs stink.</li>
           <li class="fragment">If you are unsure about correctness (which you should be) you are taking a risk by
             releasing your product to the client.</li>
@@ -1569,47 +1585,59 @@ int main(int argc, char* argv[])
           }
         
           // signed integer overflow violates C++ Standard, is already UB
-          number_to_letter(0x7fffffff);</code></pre>
+          number_to_letter(0);</code></pre>
         <aside class="notes">
           <p>contracts protect providers right to change implementation</p>
           <p>Hyrum's law suggests we should fail loudly when this contract is violated</p>
         </aside>
       </section>
 
-      <section data-transition="slide-in convex-out">
+      <section data-transition="slide-in slide-out">
         <h3>Strategies</h3>
         <ul>
-          <li class="fragment">Trap Enforcement Strategy - Bugs are Fatal</li>
-          <li class="fragment">Non-enforcement Strategy - Struggle on</li>
-          <li class="fragment">Log-And-Continue Strategy - Bugs happens</li>
-          <li class="fragment">Prevention Enforcement Strategy - Bugs, what bugs?</li>
+          <li>Trap Enforcement Strategy - Bugs are Fatal</li>
+          <li>Non-enforcement Strategy - Struggle on</li>
+          <li>Log-And-Continue Strategy - Bugs happens</li>
+          <li>Prevention Enforcement Strategy - Bugs, what bugs?</li>
         </ul>
       </section>
 
       <section data-transition="slide-in slide-out">
-        <h4>Some Useful Flags, Again</h4>
-        <img width="720" src="flags-with-strategies.png"
-          alt="A table of helpful compiler flags from the linked-to document" />
-        <div style="font-size: 45%">
-          <a
-            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
-            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
-          </a>
-        </div>
-      </section>
-
-      <section data-transition="slide-in convex-out">
-        <h3>Don't Optimise Until You Sanitize!</h3>
-        <ul>
-          <li class="fragment">Test your code before you release it.</li>
-          <li class="fragment">Make sure it's all tested (coverage).</li>
-          <li class="fragment">Make sure it's all <em>really</em> tested (fuzzing).</li>
-          <li class="fragment">Get your 9's.</li>
-        </ul>
-      </section>
-
-      <section data-transition="convex-in slide-out">
-        <h1>Discussion</h1>
+        <h2>Perceived Trade-offs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <td>correct</td>
+              <td>safe</td>
+              <td>efficient</td>
+              <td>defensive</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>'unsafe' languages, untested/legacy</td>
+              <td>😞</td>
+              <td>😞</td>
+              <td>😊</td>
+              <td>🙂</td>
+            </tr>
+            <tr>
+              <td>'safe' languages</td>
+              <td>🙂</td>
+              <td>🙂</td>
+              <td>🙂</td>
+              <td>😊</td>
+            </tr>
+            <tr>
+              <td>'unsafe' languages, tested/modern</td>
+              <td>😊</td>
+              <td>😊</td>
+              <td>😊</td>
+              <td>😃</td>
+            </tr>
+          </tbody>
+        </table>
       </section>
 
       <section data-transition="slide-in slide-out">
@@ -1639,15 +1667,22 @@ int main(int argc, char* argv[])
         </div>
       </section>
 
+      <section data-transition="slide-in slide-out">
+        <h3>Don't Optimise Until You Sanitize!</h3>
+        <ul>
+          <li>Test your code before you release it.</li>
+          <li>Make sure it's all tested (coverage).</li>
+          <li>Make sure it's all <em>really</em> tested (fuzzing).</li>
+          <li>Get your 9's.</li>
+        </ul>
+      </section>
+
       <section data-transition="slide-in convex-out">
-        <h4>Clang-Tidy Avoids Unreachable Paths</h4>
-        <img width="720" src="unreachable-main.jpg" alt="Repurposing the This Is Fine meme for Clang-Tidy" />
-        <div style="font-size: 45%">
-          <a href="https://godbolt.org/z/oWjPfrKds">
-            godbolt.org/z/oWjPfrKds
-          </a>
-        </div>
-        <p>"Doesn't look like anything to me"</p>
+        <h3>WSS - Template for C++ Projects</h3>
+        <div><a href="https://github.com/johnmcfarlane/wss/">
+            <img width="840" src="wss-page.png"
+              alt="Screenshot of the WSS GitHub page" />
+          </a></div>
       </section>
 
       <section data-transition="convex-in slide-out">
@@ -1665,6 +1700,20 @@ int main(int argc, char* argv[])
         <a href="https://johnmcfarlane.github.io/cpponsea-2022/">johnmcfarlane.github.io/cpponsea-2022</a>
       </section>
 
+
+
+
+
+      <section data-transition="slide-in convex-out">
+        <h4>Clang-Tidy Avoids Unreachable Paths</h4>
+        <img width="720" src="unreachable-main.jpg" alt="Repurposing the This Is Fine meme for Clang-Tidy" />
+        <div style="font-size: 45%">
+          <a href="https://godbolt.org/z/oWjPfrKds">
+            godbolt.org/z/oWjPfrKds
+          </a>
+        </div>
+        <p>"Doesn't look like anything to me"</p>
+      </section>
 
       <section data-transition="convex-in slide-out">
         <h1>'Bonus' Material</h1>
