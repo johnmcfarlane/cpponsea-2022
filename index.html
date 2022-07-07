@@ -21,12 +21,14 @@
   <div class="reveal">
     <div class="slides">
 
+      <section data-transition="fade-in fade-out" data-background="title.png">
+      </section>
+
       <section data-transition="fade-in convex-out">
         <h2>Contractual
-            Disappointment</h2>
+          Disappointment</h2>
         <h2>in C++</h2>
-        <a
-          href="https://johnmcfarlane.github.io/cpponsea-2022">johnmcfarlane.github.io/cpponsea-2022</a>
+        <a href="https://johnmcfarlane.github.io/cpponsea-2022">johnmcfarlane.github.io/cpponsea-2022</a>
         </p>
         <h4>2022-07-07</h4>
         <h3><a href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">C++ on Sea</a></h3>
@@ -34,16 +36,9 @@
 
       <section data-transition="convex-in slide-out">
         <h3>About Me</h3>
-        <p class="fragment">John McFarlane</p>
-        <p class="fragment">Software Engineer, Ennis, Co Clare</p>
-        <p class="fragment">
-          <img width="80" src="Octocat.png" alt="GitHub logo" />
-          <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a>
-        </p>
-        <p class="fragment">
-          <img width="80" src="2021%20Twitter%20logo%20-%20blue.png" alt="Twitter logo" />
-          <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a>
-        </p>
+        <img width="300" src="JohnMcfarlane.jpg" alt="GitHub logo" />
+        <p>John McFarlane</p>
+        <p>Software Engineer, Ennis, Co Clare</p>
         <p>&nbsp;</p>
       </section>
 
@@ -62,6 +57,25 @@
           <p>all of these subjects have influenced my attitude towards run-time disappointment</p>
           <p>note: title was chosen before decision not to proceed with contracts for C++23!</p>
         </aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h3>Useful Links</h3>
+        <ul>
+          <li>slides: <a href="https://johnmcfarlane.github.io/cpponsea-2022">johnmcfarlane.github.io/cpponsea-2022</a>
+          </li>
+          <li>code: <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a></li>
+          <li>talk: <a
+              href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html</a>
+          </li>
+          <li>essay: <a
+              href="https://github.com/johnmcfarlane/papers/blob/main/cpp">github.com/johnmcfarlane/papers/blob/main/cpp</a>
+          </li>
+          <li>rant: <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a></li>
+        </ul>
+      </section>
+
+      <section data-transition="fade-in fade-out" data-background="title.png">
       </section>
 
       <section data-transition="convex-in slide-out">
@@ -500,9 +514,9 @@
           </p>
         </aside>
         <div style="display: flex">
-          <div style="flex: 50%">
-            <h3 class="fragment">resource</h3>
-            <ul class="fragment">
+          <div class="fragment" style="flex: 50%">
+            <h3>resource</h3>
+            <ul>
               <li>missing/read-only file</li>
               <li>missing hardware device</li>
               <li>network address already in used</li>
@@ -513,9 +527,9 @@
               </li>
             </ul>
           </div>
-          <div style="flex: 50%">
-            <h3 class="fragment">ill-formed input</h3>
-            <ul class="fragment">
+          <div class="fragment" style="flex: 50%">
+            <h3>ill-formed input</h3>
+            <ul>
               <li>file too short</li>
               <li>file doesn't conform to format, e.g. JSON</li>
               <li>parameter is out of range</li>
@@ -530,19 +544,19 @@
         <h3>Error Handling</h3>
         <p>Program should handle <em>client violations</em> of the <em>End User Contract</em></p>
         <div style="display: flex">
-          <div style="flex: 50%">
-            <h3 class="fragment">halt</h3>
-            <ul class="fragment">
-              <li>When an error occurs, the request should fail.</li>
+          <div class="fragment" style="flex: 50%">
+            <h3>halt</h3>
+            <ul>
+              <li>When an error occurs, the <em>request</em> should fail.</li>
               <li>Attempting to continue 'helpfully' is unwise.</li>
               <li>The failure should be prominent (e.g.
                 <code>std::abort()</code>).
               </li>
             </ul>
           </div>
-          <div style="flex: 50%">
-            <h3 class="fragment">help</h3>
-            <ul class="fragment">
+          <div class="fragment" style="flex: 50%">
+            <h3>help</h3>
+            <ul>
               <li>Explain what failed.</li>
               <li>Explain how/why.</li>
               <li>Be thoughtful about details.</li>
@@ -632,6 +646,27 @@ int main(int argc, char const* const* argv)
   std::cout &lt;&lt; acme::do_the_thing(*input);
   return EXIT_SUCCESS;
 }</code></pre>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>No Slides Complete Without...</h3>
+        <div class="fragment">
+          <pre data-id="code-animation"><code class="cpp">
+auto main(int argc, char const* const* argv) -> int
+{
+    auto const cl{command_line{argv, static_cast&lt;unsigned>(argc)}};
+    auto const result{wordle::run(cl)};
+
+    if (auto const exit_status{std::get_if&lt;int>(&result)}) {
+        return *exit_status;
+    }
+
+    auto const& suggestions{std::get&lt;wordle::words>(result)};
+    print(suggestions);
+}</code></pre>
+          <p><a href="https://github.com/johnmcfarlane/wss/blob/main/src/wordle/main.cpp">
+              github.com/johnmcfarlane/wss/blob/main/src/wordle/main.cpp</a></p>
+        </div>
       </section>
 
       <section data-transition="slide-in slide-out">
@@ -957,7 +992,7 @@ int main(int argc, char* argv[])
         <h2>PID Controller</h2>
       </section>
 
-      <section data-transition="fade-in fade-out" data-background-iframe="https://en.wikipedia.org/wiki/PID_controller"
+      <section data-transition="fade-in slide-out" data-background-iframe="https://en.wikipedia.org/wiki/PID_controller"
         data-background-interactive data-preload>
         <h2 class="witw" style="color: rgb(0, 0, 0); background-color: rgba(131, 131, 131, 0.445);">
           Example Bug: PID Controller
@@ -974,21 +1009,12 @@ int main(int argc, char* argv[])
         </p>
       </section>
 
-      <section data-transition="fade-out">
+      <section data-transition="slide-in slide-out">
         <div>
           <img width="960" src="pid-happy.png" alt="graph of PID controller variable in-contract" />
         </div>
         <h4><em>
             Kp=.1, Ki=.5, Kd=.01, setpoint=10, pv=30
-          </em></h4>
-      </section>
-
-      <section data-transition="fade-out slide-out">
-        <div>
-          <img width="960" src="pid-negative.png" alt="graph of PID controller variable out-of-contract" />
-        </div>
-        <h4><em>
-            <span style="color:red">Kp=-.1</span>, Ki=.5, Kd=.01, setpoint=10, pv=30
           </em></h4>
       </section>
 
@@ -1011,6 +1037,15 @@ int main(int argc, char* argv[])
             alt="excerpt from Wikipedia page about PID controller with a contract highlighted" />
           <p>en.wikipedia.org/wiki/PID_controller#Mathematical_form</p>
         </a>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <div>
+          <img width="960" src="pid-negative.png" alt="graph of PID controller variable out-of-contract" />
+        </div>
+        <h4><em>
+            <span style="color:red">Kp=-.1</span>, Ki=.5, Kd=.01, setpoint=10, pv=30
+          </em></h4>
       </section>
 
       <section data-transition="slide-in slide-out">
@@ -1261,67 +1296,99 @@ int main(int argc, char* argv[])
         </aside>
       </section>
 
-      <section data-transition="slide-in slide-out">
-        <h4>Arithmetic Example 1: Divide by Zero</h4>
-        <pre data-id="code-animation"><code class="cpp"
-					data-trim data-line-numbers="|3">
-					int main()
-					{
-						return 1/0;
-					}</code></pre>
-        <aside class="notes">
-          ...can anyone spot the bug? line?
-        </aside>
+      <section data-transition="slide-in fade-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="r-stack">
+          <p>The problem</p>
+          <p class="witw">The solution</p>
+        </div>
+        <div class="r-stack">
+          <div>
+            <pre width="800" data-id="code-animation"><code class="cpp"
+            data-trim data-line-numbers="|3">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div class="witw">
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </section>
 
-      <section data-transition="slide-in slide-out">
-        <h3>Tools to the Rescue!</h3>
-        <div><a href="https://godbolt.org/z/dWo8Pevrn">
-            <img width="840" src="divide-by-zero.png"
-              alt="A divide-by-zero bugs caught twice by tools in Compiler Explorer" />
-          </a></div>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h3>Shift Left</h3>
-        <span style="text-align: left">🡠 early/cheap</span> --- detection --- <span
-          style="text-align: right">late/expensive 🡢</p>
-          <ul>
-            <li class="fragment">Bug-hostile APIs, languages and tools make the bug inconceivable.</li>
-            <ul>
-              <li class="fragment">Compilers, linters and static analysers can flag <span
-                  style="text-decoration: underline wavy red">potential bugs</span>.</li>
-              <ul>
-                <div class="fragment">⬇ Instrumentation detects bugs in executing code.</div>
-                <div class="fragment">⬇ Fuzz testing and coverage metrics guide testing.</div>
-                <li class="fragment">
-                  Automated testing exercises the code.
-                </li>
-                <ul>
-                  <li class="fragment">Bugs found by human testers are more costly.</li>
-                  <ul>
-                    <li class="fragment">Bugs found by users/customers are most costly.</li>
-                  </ul>
-                </ul>
-              </ul>
-            </ul>
-            </li>
-          </ul>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h4>Some Useful Flags</h4>
-        <img width="720" src="flags.png" alt="A table of helpful compiler flags from the linked-to document" />
-        <div style="font-size: 45%">
-          <a
-            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
-            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
-          </a>
+      <section data-transition="fade-in slide-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="r-stack">
+          <p class="witw">The problem</p>
+          <p>The solution</p>
+        </div>
+        <div class="r-stack">
+          <div class="witw">
+            <pre data-id="code-animation"><code class="cpp">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </section>
 
       <section data-transition="slide-in slide-out">
-        <h3>Testing with Sanitizers is Left of Bug Reports</h3>
+        <h3>Example 2</h3>
         <pre data-id="code-animation"><code class="cpp"
 					data-trim data-line-numbers="3-5|3|4|5">
           int main()
@@ -1339,6 +1406,17 @@ int main(int argc, char* argv[])
         <p class="fragment"><a href="https://godbolt.org/z/zq8M61P5P">
             MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
           </a></p>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>More Flags</h4>
+        <img width="720" src="flags.png" alt="A table of helpful compiler flags from the linked-to document" />
+        <div style="font-size: 45%">
+          <a
+            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
+            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
+          </a>
+        </div>
       </section>
 
 
@@ -1605,7 +1683,7 @@ int main(int argc, char* argv[])
         <p>John McFarlane</p>
         <p>
           <img width="80" src="Octocat.png" alt="GitHub logo" />
-          <a href="https://github.com/johnmcfarlane/accu-2022-examples/">github.com/johnmcfarlane/accu-2022-examples</a>
+          <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a>
         </p>
         <p>
           <img width="80" src="2021%20Twitter%20logo%20-%20blue.png" alt="Twitter logo" />
