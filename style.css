@@ -16,8 +16,19 @@
     vertical-align: text-top;
 }
 
+.wings {
+    position:relative;
+}
+
 .witw {
     visibility: hidden;
+}
+
+.pwitw {
+    visibility: hidden;
+    position:absolute;
+    top:0;
+    text-align: left;
 }
 
 .significant {

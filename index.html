@@ -825,19 +825,19 @@ int main(int argc, char* argv[])
 
       <section data-transition="slide-in slide-out">
         <h3>Exceptions</h3>
-        <ul class="fragment">
-          <li>Pros:
+        <ul>
+          <li class="fragment">Pros:
             <ul>
-              <li class="fragment">versatile/scalable</li>
-              <li class="fragment">very efficient normal path</li>
-              <li class="fragment">hide control flow</li>
+              <li>versatile/scalable</li>
+              <li>very efficient normal path</li>
+              <li>hide control flow</li>
             </ul>
           </li>
           <li class="fragment">Cons:
             <ul>
-              <li class="fragment">exceedingly slow in exceptional path</li>
-              <li class="fragment">not always optimal in normal path</li>
-              <li class="fragment">hide control flow</li>
+              <li>exceedingly slow in exceptional path</li>
+              <li>not always optimal in normal path</li>
+              <li>hide control flow</li>
             </ul>
           </li>
         </ul>
@@ -846,6 +846,15 @@ int main(int argc, char* argv[])
           It's a big subject!
         </aside>
       </section>
+
+
+
+
+      <!-- C++ Standard Contracts -->
+
+
+
+
 
       <section data-transition="slide-in fade-out">
         <h3>Contract Attributes</h3>
@@ -890,13 +899,350 @@ int main(int argc, char* argv[])
             </tr>
           </tbody>
         </table>
-        <aside class="notes">so that's the End User Contract,
-          its client violations,
-          and how you, the provider, should handle those
-        </aside>
+        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
       </section>
 
       <section data-transition="fade-in convex-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th>standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td>ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td>dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td>implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td>bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>C++ Standard</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>C++ Standard as a Contract</h3>
+        <ul>
+          <li>The exchange of promises between C++ developers and C++ implementers.</li>
+          <li>The authors of the contract are WG21 - not necessarily the providers.</li>
+          <li>Client violations are <em>bugs</em>.</li>
+          <li>Violation is UB<sup>*</sup>.</li>
+          <li>Fixing bugs is as important as fixing compile-time errors.<sup>†</sup></li>
+        </ul>
+        <p style="font-size:55%">* In a talk about run-time disappointment</p>
+        <p style="font-size:55%">† Contentious</p>
+        <aside class="notes">...so I guess we're talking about...</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Bugs!</h3>
+        <p>A program with a bug:</p>
+        <ul>
+          <li>is incorrect</li>
+          <li>contains undefined behaviour</li>
+          <li>is vulnerable</li>
+          <li>violates the <em>End User Contract</em>.</li>
+        </ul>
+        <aside class="notes">and again...</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4><a href="https://xkcd.com/435/">xkcd.com/435</a></h4>
+        <img width="1200" src="purity.png" alt="XKCD comic strip about purity" />
+        <div style="display: flex">
+          <span style="flex: 3%"></span>
+          <span style="flex: 11%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 12%">errors</span>
+          <span style="flex: 10%">errors</span>
+          <span style="flex: 8%" class="witw">errors</span>
+          <span style="flex: 12%" class="witw">errors</span>
+          <span style="flex: 10%">bugs</span>
+          <span style="flex: 8%"></span>
+        </div>
+        <aside class="notes">bugs are fundamental</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Bugs!</h3>
+        <p>Prominent C++ Standard contract violation bugs fall into two main categories</p>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 48%">
+            <h3>arithmetic</h3>
+            <ul>
+              <li>divide-by-zero</li>
+              <li>overflow</li>
+            </ul>
+          </div>
+          <div style="flex: 4%">
+          </div>
+          <div class="fragment" style="flex: 48%">
+            <h3>object lifetime</h3>
+            <ul>
+              <li>null pointer dereference</li>
+              <li>dangling pointer dereference (use after free)</li>
+              <li>out-of-bounds sequence lookup (e.g. buffer overflow)</li>
+              <li>double-deletion</li>
+              <li><del>leaks</del></li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes">
+          <p>These are often mentioned in relation to vulnerabilities.</p>
+          <p>The first on each list avoids a lot of heat because it typically occurs during
+            testing.</p>
+        </aside>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="wings">
+          <p>The problem</p>
+          <p class="pwitw">The solution</p>
+        </div>
+        <div class="wings">
+          <div>
+            <pre width="800" data-id="code-animation"><code class="cpp"
+            data-trim data-line-numbers="|3">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div class="pwitw">
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="wings">
+          <p class="pwitw">The problem</p>
+          <p>The solution</p>
+        </div>
+        <div class="wings">
+          <div class="pwitw">
+            <pre data-id="code-animation"><code class="cpp">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h3>Example 2</h3>
+        <div class="wings">
+          <p>The problem</p>
+          <p class="pwitw">The solution</p>
+        </div>
+        <div class="wings">
+          <div>
+            <pre data-id="code-animation"><code class="cpp"
+              data-trim data-line-numbers="3-5|3|4|5">
+              int main()
+              {
+                  auto v{std::vector{0, 1}};
+                  v.push_back(2);
+                  fmt::print("{}\n", v[3]);
+              }</code></pre>
+          </div>
+          <div class="pwitw">
+            <p><a href="https://godbolt.org/z/sTrPT6hbo">
+                libc++: <em>-D_LIBCPP_DEBUG</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/bzdEj9ohh">
+                libstdc++: <em>-D_GLIBCXX_ASSERTIONS</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/zq8M61P5P">
+                MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
+              </a></p>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>Example 2</h3>
+        <div class="wings">
+          <p class="pwitw">The problem</p>
+          <p>The solution</p>
+        </div>
+        <div class="wings">
+          <div class="pwitw">
+            <pre data-id="code-animation"><code class="cpp" data-trim>
+          int main()
+          {
+              auto v{std::vector{0, 1}};
+              v.push_back(2);
+              fmt::print("{}\n", v[3]);
+          }</code></pre>
+          </div>
+          <div>
+            <p><a href="https://godbolt.org/z/sTrPT6hbo">
+                libc++: <em>-D_LIBCPP_DEBUG</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/bzdEj9ohh">
+                libstdc++: <em>-D_GLIBCXX_ASSERTIONS</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/zq8M61P5P">
+                MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
+              </a></p>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>More Flags</h4>
+        <img width="720" src="flags.png" alt="A table of helpful compiler flags from the linked-to document" />
+        <div style="font-size: 45%">
+          <a
+            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
+            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
+          </a>
+        </div>
+      </section>
+
+
+
+
+
+      <!-- C++ API Contracts -->
+
+      <section data-transition="slide-in fade-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th>standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td>ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td>dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td>implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td>bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
+      </section>
+
+      <section data-transition="fade-in slide-out">
         <h3>Contract Attributes</h3>
         <table>
           <thead>
@@ -939,52 +1285,22 @@ int main(int argc, char* argv[])
             </tr>
           </tbody>
         </table>
-        <aside class="notes">next, lets turn to...</aside>
+        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
       </section>
+
 
       <section data-transition="convex-in slide-out">
         <h1>C++ API Contracts</h1>
       </section>
 
-      <section data-transition="slide-in convex-out">
+      <section data-transition="slide-in slide-out">
         <h3>C++ API Contracts</h3>
         <ul>
-          <li class="fragment">The exchange of promises between the developer(s) using and implementing a C++
+          <li>The exchange of promises between the developer(s) using and implementing a C++
             API.</li>
-          <li class="fragment">Violations are <em>bugs</em>.</li>
-          <li class="fragment">Fixing bugs is as important as fixing compiler errors.</li>
+          <li>Again, violations are <em>bugs</em>.</li>
+          <li>Again, violation is UB.</li>
         </ul>
-        <aside class="notes">So let's talk about...</aside>
-      </section>
-
-      <section data-transition="convex-in slide-out">
-        <h3>Bugs</h3>
-        <p class="fragment">A program with a bug:</p>
-        <ul>
-          <li class="fragment">is incorrect</li>
-          <li class="fragment">contains undefined behaviour</li>
-          <li class="fragment">is vulnerable</li>
-          <li class="fragment">violates the <em>End User Contract</em>.</li>
-        </ul>
-        <aside class="notes">and again...</aside>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h4><a href="https://xkcd.com/435/">xkcd.com/435</a></h4>
-        <img width="1200" src="purity.png" alt="XKCD comic strip about purity" />
-        <div style="display: flex">
-          <span style="flex: 3%"></span>
-          <span style="flex: 11%">errors</span>
-          <span style="flex: 13%">errors</span>
-          <span style="flex: 13%">errors</span>
-          <span style="flex: 12%">errors</span>
-          <span style="flex: 10%">errors</span>
-          <span style="flex: 8%" class="witw">errors</span>
-          <span style="flex: 12%" class="witw">errors</span>
-          <span style="flex: 10%">bugs</span>
-          <span style="flex: 8%"></span>
-        </div>
-        <aside class="notes">bugs are fundamental</aside>
       </section>
 
       <section data-transition="slide-in fade-out">
@@ -1051,78 +1367,78 @@ int main(int argc, char* argv[])
       <section data-transition="slide-in slide-out">
         <h4>PID Controller (interface)</h4>
         <pre data-id="code-animation"><code class="cpp"
-					data-trim data-line-numbers="1|2-6|8-14|10-11|16-19|21-27|29-35|37-38">
-					namespace pid {
-						struct components {
-							double proportional;
-							double integral;
-							double derivative;
-						};
-					
-						// values kept constant throughout operation of a controller
-						struct parameters {
-							// non-negative factors used to generate PID terms
-							components k;
-					
-							double dt;
-						};
-					
-						struct state {
-							double integral;
-							double error;
-						};
-					
-						struct input {
-							// desired value
-							double setpoint;
-					
-							// actual value
-							double process_variable;
-						};
-					
-						struct result {
-							// corrective value to apply to system
-							double correction;
-					
-							// to pass in to next iteration as input::previous state
-							state current;
-						};
-					
-						[[nodiscard]] auto calculate(parameters params, state previous, input in)
-								-&gt; result;
-					}</code></pre>
+    data-trim data-line-numbers="1|2-6|8-14|10-11|16-19|21-27|29-35|37-38">
+    namespace pid {
+      struct components {
+        double proportional;
+        double integral;
+        double derivative;
+      };
+    
+      // values kept constant throughout operation of a controller
+      struct parameters {
+        // non-negative factors used to generate PID terms
+        components k;
+    
+        double dt;
+      };
+    
+      struct state {
+        double integral;
+        double error;
+      };
+    
+      struct input {
+        // desired value
+        double setpoint;
+    
+        // actual value
+        double process_variable;
+      };
+    
+      struct result {
+        // corrective value to apply to system
+        double correction;
+    
+        // to pass in to next iteration as input::previous state
+        state current;
+      };
+    
+      [[nodiscard]] auto calculate(parameters params, state previous, input in)
+          -&gt; result;
+    }</code></pre>
       </section>
 
       <section data-transition="slide-in slide-out">
         <h4>PID Controller (implementation)</h4>
         <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="5-6|8-10|11|13-15|17-20|22-23|24-26">
-					#include "pid.h"
+    #include "pid.h"
 
-					#include "pid_assert.h"
-					
-					[[nodiscard]] auto pid::calculate(parameters params, state previous, input in)
-							-&gt; result
-					{
-						PID_ASSERT(params.k.proportional &gt;= 0);
-						PID_ASSERT(params.k.integral &gt;= 0);
-						PID_ASSERT(params.k.derivative &gt;= 0);
-						PID_ASSERT(params.dt &gt; 0);
+    #include "pid_assert.h"
+    
+    [[nodiscard]] auto pid::calculate(parameters params, state previous, input in)
+        -&gt; result
+    {
+      PID_ASSERT(params.k.proportional &gt;= 0);
+      PID_ASSERT(params.k.integral &gt;= 0);
+      PID_ASSERT(params.k.derivative &gt;= 0);
+      PID_ASSERT(params.dt &gt; 0);
 
-						auto const error = in.setpoint - in.process_variable;
-						auto const next_integral{previous.integral + error * params.dt};
-						auto const derivative = (error - previous.error) / params.dt;
+      auto const error = in.setpoint - in.process_variable;
+      auto const next_integral{previous.integral + error * params.dt};
+      auto const derivative = (error - previous.error) / params.dt;
 
-						auto const terms{components{
-								.proportional = params.k.proportional * error,
-								.integral = params.k.integral * next_integral,
-								.derivative = params.k.derivative * derivative}};
+      auto const terms{components{
+          .proportional = params.k.proportional * error,
+          .integral = params.k.integral * next_integral,
+          .derivative = params.k.derivative * derivative}};
 
-						auto const output = terms.proportional + terms.integral + terms.derivative;
+      auto const output = terms.proportional + terms.integral + terms.derivative;
 
-						return result{
-								output,
-								state{next_integral, error}};
-					}</code></pre>
+      return result{
+          output,
+          state{next_integral, error}};
+    }</code></pre>
         <aside class="notes">
           <p>plenty of other potential bugs, esp. to do with range</p>
           <p>variables in steady state systems is a whole topic</p>
@@ -1133,384 +1449,39 @@ int main(int argc, char* argv[])
         <h3>Example of Client C++ API Contract Violation #2</h3>
         <h2>(Anecdotal) UID vs Bitmap</h2>
         <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="1|2|4|6|7|8">
-          typedef uid = std::uint32_t;
-          constexpr auto invalid_id{uid{-1}};
-          ...
-          class bitset {
-          public:
-            bool get(std::size_t index) const {
-              if (index &gt;= size()) {
-                resize(index);
-              }
-            ...
-            }
-            ...
-          };</code></pre>
+    typedef uid = std::uint32_t;
+    constexpr auto invalid_id{uid{-1}};
+    ...
+    class bitset {
+    public:
+      bool get(std::size_t index) const {
+        if (index &gt;= size()) {
+          resize(index+1);
+        }
+      ...
+      }
+      ...
+    };</code></pre>
       </section>
 
-      <section data-transition="slide-in slide-out">
+      <section data-transition="slide-in convex-out">
         <h2>UID vs Bitmap</h2>
         <h4>Observations</h4>
         <ul>
           <li>Sentinel values, e.g. <code class="cpp">invalid_id</code>, are trouble!</li>
           <li><em>Defensive</em> or <em>helpful</em> code is unwelcome complexity.</li>
           <li>Trap bugs as they hatch.</li>
+          <li>Don't rely on <code>unsigned</code> types to help you.</li>
         </ul>
       </section>
 
-      <section data-transition="slide-in fade-out">
-        <h3>Contract Attributes</h3>
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th>C++ API</th>
-              <th class="implicit">standard</th>
-              <th class="implicit">end user</th>
-              <th class="implicit">test user</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="implicit">agreement</td>
-              <td>docs</td>
-              <td class="implicit">ISO/IEC 14882</td>
-              <td class="implicit">docs</td>
-              <td class="implicit">docs</td>
-            </tr>
-            <tr>
-              <td class="implicit">client</td>
-              <td>dev</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">user</td>
-              <td class="implicit">dev</td>
-            </tr>
-            <tr>
-              <td class="implicit">provider</td>
-              <td>dev</td>
-              <td class="implicit">implementer</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">implementer</td>
-            </tr>
-            <tr>
-              <td class="implicit">violation</td>
-              <td>bug</td>
-              <td class="implicit">bug</td>
-              <td class="implicit">error</td>
-              <td class="implicit">error</td>
-            </tr>
-          </tbody>
-        </table>
-        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
-      </section>
-
-      <section data-transition="fade-in convex-out">
-        <h3>Contract Attributes</h3>
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="implicit">C++ API</th>
-              <th>standard</th>
-              <th class="implicit">end user</th>
-              <th class="implicit">test user</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="implicit">agreement</td>
-              <td class="implicit">docs</td>
-              <td>ISO/IEC 14882</td>
-              <td class="implicit">docs</td>
-              <td class="implicit">docs</td>
-            </tr>
-            <tr>
-              <td class="implicit">client</td>
-              <td class="implicit">dev</td>
-              <td>dev</td>
-              <td class="implicit">user</td>
-              <td class="implicit">dev</td>
-            </tr>
-            <tr>
-              <td class="implicit">provider</td>
-              <td class="implicit">dev</td>
-              <td>implementer</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">implementer</td>
-            </tr>
-            <tr>
-              <td class="implicit">violation</td>
-              <td class="implicit">bug</td>
-              <td>bug</td>
-              <td class="implicit">error</td>
-              <td class="implicit">error</td>
-            </tr>
-          </tbody>
-        </table>
-        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
-      </section>
-
-      <section data-transition="convex-in slide-out">
-        <h1>C++ Standard</h1>
-      </section>
-
-      <section data-transition="slide-in convex-out">
-        <h3>C++ Standard as a Contract</h3>
-        <ul>
-          <li class="fragment">The exchange of promises between C++ developers and C++ implementers.</li>
-          <li class="fragment">The authors of the contract are WG21 - not necessarily the providers.</li>
-          <li class="fragment">Client violations are <em>bugs</em>.</li>
-          <li class="fragment">As with C++ API Contracts, violation is UB.</li>
-        </ul>
-        <aside class="notes">...so I guess we're talking about...</aside>
-      </section>
-
-      <section data-transition="convex-in slide-out">
-        <h3>More Bugs!</h3>
-        <p>Prominent C++ Standard contract violation bugs fall into two main categories</p>
-        <div style="display: flex">
-          <div style="flex: 48%">
-            <h3 class="fragment">arithmetic</h3>
-            <ul>
-              <li class="fragment">divide-by-zero</li>
-              <li class="fragment">overflow</li>
-            </ul>
-          </div>
-          <div style="flex: 4%">
-          </div>
-          <div style="flex: 48%">
-            <h3 class="fragment">object lifetime</h3>
-            <ul>
-              <li class="fragment">null pointer dereference</li>
-              <li class="fragment">dangling pointer dereference (use after free)</li>
-              <li class="fragment">out-of-bounds sequence lookup (e.g. buffer overflow)</li>
-              <li class="fragment">double-deletion</li>
-              <li class="fragment"><del>leaks</del></li>
-            </ul>
-          </div>
-        </div>
-        <aside class="notes">
-          <p>These are often mentioned in relation to vulnerabilities.</p>
-          <p>The first on each list avoids a lot of heat because it typically occurs during
-            testing.</p>
-        </aside>
-      </section>
-
-      <section data-transition="slide-in fade-out">
-        <h4>Example 1: Arithmetic</h4>
-        <div class="r-stack">
-          <p>The problem</p>
-          <p class="witw">The solution</p>
-        </div>
-        <div class="r-stack">
-          <div>
-            <pre width="800" data-id="code-animation"><code class="cpp"
-            data-trim data-line-numbers="|3">
-            int main()
-            {
-              return 1/0;
-            }</code></pre>
-          </div>
-          <div class="witw">
-            <table>
-              <thead>
-                <tr>
-                  <th>flag</th>
-                  <th>effect</th>
-                  <th>when</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>-Werror</code></td>
-                  <td>treat warnings as errors</td>
-                  <td>compile</td>
-                </tr>
-                <tr>
-                  <td><code>-Wall -Wextra -pedantic</code></td>
-                  <td>gimme more warnings!</td>
-                  <td>compile</td>
-                </tr>
-                <tr>
-                  <td><code>-fsanitize=undefined</code></td>
-                  <td>trap UB</td>
-                  <td>execution</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section data-transition="fade-in slide-out">
-        <h4>Example 1: Arithmetic</h4>
-        <div class="r-stack">
-          <p class="witw">The problem</p>
-          <p>The solution</p>
-        </div>
-        <div class="r-stack">
-          <div class="witw">
-            <pre data-id="code-animation"><code class="cpp">
-            int main()
-            {
-              return 1/0;
-            }</code></pre>
-          </div>
-          <div>
-            <table>
-              <thead>
-                <tr>
-                  <th>flag</th>
-                  <th>effect</th>
-                  <th>when</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>-Werror</code></td>
-                  <td>treat warnings as errors</td>
-                  <td>compile</td>
-                </tr>
-                <tr>
-                  <td><code>-Wall -Wextra -pedantic</code></td>
-                  <td>gimme more warnings!</td>
-                  <td>compile</td>
-                </tr>
-                <tr>
-                  <td><code>-fsanitize=undefined</code></td>
-                  <td>trap UB</td>
-                  <td>execution</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h3>Example 2</h3>
-        <pre data-id="code-animation"><code class="cpp"
-					data-trim data-line-numbers="3-5|3|4|5">
-          int main()
-          {
-              auto v{std::vector{0, 1}};
-              v.push_back(2);
-              fmt::print("{}\n", v[3]);
-          }</code></pre>
-        <p class="fragment"><a href="https://godbolt.org/z/sTrPT6hbo">
-            libc++: <em>-D_LIBCPP_DEBUG</em>
-          </a></p>
-        <p class="fragment"><a href="https://godbolt.org/z/bzdEj9ohh">
-            libstdc++: <em>-D_GLIBCXX_ASSERTIONS</em>
-          </a></p>
-        <p class="fragment"><a href="https://godbolt.org/z/zq8M61P5P">
-            MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
-          </a></p>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h4>More Flags</h4>
-        <img width="720" src="flags.png" alt="A table of helpful compiler flags from the linked-to document" />
-        <div style="font-size: 45%">
-          <a
-            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
-            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
-          </a>
-        </div>
-      </section>
 
 
-      <section data-transition="slide-in fade-out">
-        <h3>Contract Attributes</h3>
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="implicit">C++ API</th>
-              <th>standard</th>
-              <th class="implicit">end user</th>
-              <th class="implicit">test user</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="implicit">agreement</td>
-              <td class="implicit">docs</td>
-              <td>ISO/IEC 14882</td>
-              <td class="implicit">docs</td>
-              <td class="implicit">docs</td>
-            </tr>
-            <tr>
-              <td class="implicit">client</td>
-              <td class="implicit">dev</td>
-              <td>dev</td>
-              <td class="implicit">user</td>
-              <td class="implicit">dev</td>
-            </tr>
-            <tr>
-              <td class="implicit">provider</td>
-              <td class="implicit">dev</td>
-              <td>implementer</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">implementer</td>
-            </tr>
-            <tr>
-              <td class="implicit">violation</td>
-              <td class="implicit">bug</td>
-              <td>bug</td>
-              <td class="implicit">error</td>
-              <td class="implicit">error</td>
-            </tr>
-          </tbody>
-        </table>
-        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
-      </section>
 
-      <section data-transition="fade-in convex-out">
-        <h3>Contract Attributes</h3>
-        <table>
-          <thead>
-            <tr>
-              <th></th>
-              <th class="implicit">C++ API</th>
-              <th class="implicit">standard</th>
-              <th class="implicit">end user</th>
-              <th>test user</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="implicit">agreement</td>
-              <td class="implicit">docs</td>
-              <td class="implicit">ISO/IEC 14882</td>
-              <td class="implicit">docs</td>
-              <td>docs</td>
-            </tr>
-            <tr>
-              <td class="implicit">client</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">user</td>
-              <td>dev</td>
-            </tr>
-            <tr>
-              <td class="implicit">provider</td>
-              <td class="implicit">dev</td>
-              <td class="implicit">implementer</td>
-              <td class="implicit">dev</td>
-              <td>implementer</td>
-            </tr>
-            <tr>
-              <td class="implicit">violation</td>
-              <td class="implicit">bug</td>
-              <td class="implicit">bug</td>
-              <td class="implicit">error</td>
-              <td>error</td>
-            </tr>
-          </tbody>
-        </table>
-        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
-      </section>
+
+
+
+
 
       <section data-transition="convex-in slide-out">
         <h1>Test User Contract</h1>
@@ -1519,12 +1490,13 @@ int main(int argc, char* argv[])
       <section data-transition="slide-in slide-out">
         <h3>The Test User Contract</h3>
         <ul>
-          <li class="fragment">An exchange of promises between C++ developers and C++ tools providers.</li>
-          <li class="fragment">Authors are implementers, no the committee.</li>
-          <li class="fragment">Client violations are <del>bugs</del> <em>errors</em>.</li>
-          <li class="fragment">These errors arise at the point where a bug is discovered.</li>
-          <li class="fragment">The user is a dev in need of feedback about correctness.</li>
-          <li class="fragment">One such tool is <code>assert</code>.</li>
+          <li>An exchange of promises between C++ developers and C++ tools providers.</li>
+          <li>One such tool is <code>assert</code>.</li>
+          <li>Sanitizers are newer such tools.</li>
+          <li>Authors are implementers, not the committee.</li>
+          <li>API/standard violations are <del>bugs</del> <em>errors</em>.</li>
+          <li>These errors arise at the point where a bug is discovered.</li>
+          <li>The user is a dev in need of feedback about correctness.</li>
         </ul>
       </section>
 
