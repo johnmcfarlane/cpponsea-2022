@@ -1,0 +1,1969 @@
+<!doctype html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <title>Contractual Disappointment in C++ - C++ on Sea 2022</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dist/reset.css">
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/theme/simple.css">
+
+  <!-- Theme used for syntax highlighted code -->
+  <link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+      <section data-transition="fade-in fade-out" data-background="title.png">
+      </section>
+
+      <section data-transition="fade-in convex-out">
+        <h2>Contractual
+          Disappointment</h2>
+        <h2>in C++</h2>
+        <a
+          href="https://johnmcfarlane.github.io/cpponsea-2022/online.html">johnmcfarlane.github.io/cpponsea-2022/online.html</a>
+        </p>
+        <h4>2022-07-15</h4>
+        <h3><a href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">C++ on Sea</a></h3>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h3>About Me</h3>
+        <img width="300" src="JohnMcfarlane.jpg" alt="GitHub logo" />
+        <p>John McFarlane</p>
+        <p>Software Engineer, Ennis, Co Clare</p>
+        <p>&nbsp;</p>
+      </section>
+
+      <section data-transition="slide-in convex-out">
+        <h3>Background</h3>
+        <p>
+          <span class="fragment">Work: games, servers, automotive</span>
+        </p>
+        <p>
+          <span class="fragment">Fun: numerics, workflow, word games</span>
+        </p>
+        <p>
+          <span class="fragment">C++: low latency, numerics, contracts</span>
+        </p>
+        <aside class="notes">
+          <p>all of these subjects have influenced my attitude towards run-time disappointment</p>
+          <p>note: title was chosen before decision not to proceed with contracts for C++23!</p>
+        </aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h3>Useful Links</h3>
+        <ul>
+          <li>slides: <a
+              href="https://johnmcfarlane.github.io/cpponsea-2022/online.html">johnmcfarlane.github.io/cpponsea-2022/online.html</a>
+          </li>
+          <li>code: <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a></li>
+          <li>talk: <a
+              href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html</a>
+          </li>
+          <li>essay: <a
+              href="https://github.com/johnmcfarlane/papers/blob/main/cpp">github.com/johnmcfarlane/papers/blob/main/cpp</a>
+          </li>
+          <li>rant: <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a></li>
+        </ul>
+      </section>
+
+      <section data-transition="fade-in fade-out" data-background="title.png">
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>Definitions</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Contracts</h3>
+        <p><a href="https://youtu.be/aAFRxRznVjQ">Contract Programming in C++(20)</a></p>
+        <p>Alisdair Meredith, CppCon 2018</p>
+        <blockquote cite="https://www.youtube.com/watch?v=aAFRxRznVjQ&t=359s">
+          A contract is an exchange of promises
+          between a client and a provider.
+        </blockquote>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Disappointment</h3>
+        <p><a href="https://wg21.link/p0157">P0157R0: Handling Disappointment in C++</a></p>
+        <p>Lawrence Crowl, 2015</p>
+        <blockquote cite="https://wg21.link/p0157">
+          When a function fails to do what we want, we are disappointed.
+          How do we report that disappointment to callers?
+          How do we handle that disappointment in the caller?
+        </blockquote>
+      </section>
+
+      <section data-transition="slide-in convex-out">
+        <h3>Bugs and Errors</h3>
+        <p><a href="https://wg21.link/p709r2">P0709R2: Zero-overhead deterministic exceptions: Throwing
+            values</a></p>
+        <p>Herb Sutter, 2018</p>
+        <blockquote cite="https://wg21.link/p0709r2">
+          Programming bugs (e.g., out-of-bounds access, null dereference)
+          and abstract machine corruption (e.g., stack overflow)
+          cause a corrupted state that cannot be recovered from programmatically,
+          and so they should never be reported to the calling code
+          as errors that code could somehow handle.
+        </blockquote>
+        <aside class="notes">
+          bugs and errors are different;
+          that's very important;
+          it's not always obvious which is which
+        </aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>Contracts</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Contracts</h3>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 50%">
+            <h3>Types</h3>
+            <ul>
+              <li>C++ API Contracts</li>
+              <li>C++ Standard</li>
+              <li>End User Contract</li>
+              <li>Test User Contract</li>
+            </ul>
+          </div>
+          <div class="fragment" style="flex: 50%">
+            <h3>Attributes</h3>
+            <ul>
+              <li>Agreement</li>
+              <li>Client</li>
+              <li>Provider</li>
+              <li>(Client) Violation</li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes">
+          I'll mostly talk about client violation.
+        </aside>
+      </section>
+
+      <section data-transition="slide-in none-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>C++ API</th>
+              <th>standard</th>
+              <th>end user</th>
+              <th>test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>agreement</td>
+              <td class="witw">docs</td>
+              <td class="witw">ISO/IEC 14882</td>
+              <td class="witw">docs</td>
+              <td class="witw">docs</td>
+            </tr>
+            <tr>
+              <td>client</td>
+              <td class="witw">dev</td>
+              <td class="witw">dev</td>
+              <td class="witw">user</td>
+              <td class="witw">dev</td>
+            </tr>
+            <tr>
+              <td>provider</td>
+              <td class="witw">dev</td>
+              <td class="witw">implementer</td>
+              <td class="witw">dev</td>
+              <td class="witw">implementer</td>
+            </tr>
+            <tr>
+              <td>violation</td>
+              <td class="witw">bug</td>
+              <td class="witw">bug</td>
+              <td class="witw">error</td>
+              <td class="witw">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">the matrix of attributes by contract</aside>
+      </section>
+
+      <section data-transition="none-in none-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>C++ API</th>
+              <th>standard</th>
+              <th>end user</th>
+              <th>test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>agreement</td>
+              <td>docs</td>
+              <td>ISO/IEC 14882</td>
+              <td>docs</td>
+              <td>docs</td>
+            </tr>
+            <tr>
+              <td>client</td>
+              <td>dev</td>
+              <td>dev</td>
+              <td>user</td>
+              <td>dev</td>
+            </tr>
+            <tr>
+              <td>provider</td>
+              <td>dev</td>
+              <td>implementer</td>
+              <td>dev</td>
+              <td>implementer</td>
+            </tr>
+            <tr>
+              <td>violation</td>
+              <td>bug</td>
+              <td>bug</td>
+              <td>error</td>
+              <td>error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">the matrix of attributes by contract</aside>
+      </section>
+
+      <section data-transition="none-in none-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th class="implicit">standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td>violation</td>
+              <td>bug</td>
+              <td>bug</td>
+              <td>error</td>
+              <td>error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">client violations are either bugs or errors</aside>
+      </section>
+
+      <section data-transition="none-in none-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th class="implicit">standard</th>
+              <th class="implicit">end user</th>
+              <th>test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td>docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">user</td>
+              <td>dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+              <td class="implicit">dev</td>
+              <td>implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">error</td>
+              <td>error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">the test user contract is a very special case</aside>
+      </section>
+
+      <section data-transition="none-in none-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th class="implicit">standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">dev</td>
+              <td>user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">single most important cell</aside>
+      </section>
+
+      <section data-transition="none-in convex-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="witw">C++ API</th>
+              <th class="witw">standard</th>
+              <th class="implicit">end user</th>
+              <th class="witw">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="witw">agreement</td>
+              <td class="witw">docs</td>
+              <td class="witw">ISO/IEC 14882</td>
+              <td class="witw">docs</td>
+              <td class="witw">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="witw">dev</td>
+              <td class="witw">dev</td>
+              <td>user</td>
+              <td class="witw">dev</td>
+            </tr>
+            <tr>
+              <td class="witw">provider</td>
+              <td class="witw">dev</td>
+              <td class="witw">implementer</td>
+              <td class="witw">dev</td>
+              <td class="witw">implementer</td>
+            </tr>
+            <tr>
+              <td class="witw">violation</td>
+              <td class="witw">bug</td>
+              <td class="witw">bug</td>
+              <td class="witw">error</td>
+              <td class="witw">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">the user is the client in the End User Contract</aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>End User Contract</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>End User Contract</h3>
+        <ul>
+          <li class="fragment">
+            The exchange of promises between the user and developer of a software product.
+          </li>
+          <li class="fragment">It's expected that the user may violate the contract.
+            <ul>
+              <li class="fragment">All people make mistakes.</li>
+              <li class="fragment">Some people are naughty!</li>
+            </ul>
+          </li>
+          <li class="fragment">Such violations are <em>errors</em>.</li>
+          <li class="fragment">Errors should be handled by the program.</li>
+        </ul>
+        <aside class="notes">
+          ...so let's talk about errors
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Errors</h3>
+        <ul>
+          <li>imperfections modelled <em>within</em> the system</li>
+          <li>caused by unpredictability/unreliability (esp. of humans!)</li>
+          <li>happen in bug-free programs</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4><a href="https://xkcd.com/435/">xkcd.com/435</a></h4>
+        <img width="1200" src="purity.png" alt="XKCD comic strip about purity" />
+        <div style="display: flex">
+          <span style="flex: 3%"></span>
+          <span style="flex: 11%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 12%">errors</span>
+          <span style="flex: 10%">errors</span>
+          <span style="flex: 8%" class="witw">errors</span>
+          <span style="flex: 12%" class="witw">errors</span>
+          <span style="flex: 10%">bugs</span>
+          <span style="flex: 8%"></span>
+        </div>
+        <aside class="notes">comparison between engineering / science, purity / perfection</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Input Errors</h3>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 50%">
+            <ul>
+              <p>Missing/ill-formed input:</p>
+              <ul>
+                <li>command line</li>
+                <li>network traffic</li>
+                <li>files</li>
+                <li>input devices</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="fragment" style="flex: 50%">
+            <ul>
+              <p>beware:</p>
+              <ul>
+                <li><code>std::filesystem</code></li>
+                <li><code>std::string</code></li>
+              </ul>
+              <p>these are UI elements!</p>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Reliability Errors</h3>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 50%">
+            <ul>
+              IO failures due to:
+              <ul>
+                <li>physical disconnection</li>
+                <li>mechanical failure</li>
+                <li>exhausted capacity</li>
+                <li>endpoint malfunctions</li>
+              </ul>
+            </ul>
+          </div>
+          <div class="fragment" style="flex: 50%">
+            <ul>
+              wireless connections versus:
+              <ul>
+                <li>tunnels</li>
+                <li>weather</li>
+                <li>bags of mostly water</li>
+                <li>competing wireless devices</li>
+              </ul>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h3>Error Handling</h3>
+        <p>Program should handle <em>client violations</em> of the <em>End User Contract</em></p>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 49%">
+            <h3>halt</h3>
+            <ul>
+              <li>When an error occurs, the <em>request</em> should fail.</li>
+              <li>Attempting to continue 'helpfully' is unwise.</li>
+              <li>The failure should be prominent (e.g.
+                <code>std::abort()</code>).
+              </li>
+            </ul>
+          </div>
+          <div style="flex: 2%"></div>
+          <div class="fragment" style="flex: 49%">
+            <h3>help</h3>
+            <ul>
+              <li>Explain what failed.</li>
+              <li>Explain how/why.</li>
+              <li>Be thoughtful about details.</li>
+              <li>What will help the user succeed next time?</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>$1,000,000 Question</h3>
+        <p>
+          How does your program handle errors?
+        </p>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>$1,000,000 Answer</h3>
+        <p>
+          It depends.
+        </p>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>It depends on the program</h3>
+        <ul>
+          <li class="fragment">Is your program batch or steady-state?</li>
+          <li class="fragment">Does your program have realtime constraints?</li>
+          <li class="fragment">Does your program respond through:
+            <ul>
+              <li>a console,</li>
+              <li>a GUI,</li>
+              <li>a RESTful API,</li>
+              <li>something else, or</li>
+              <li class="fragment">nothing at all?</li>
+            </ul>
+          </li>
+          <li class="fragment">What about libraries?</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>If you're lucky</h3>
+        <pre class="fragment" data-id="code-animation"><code class="cpp" data-trim data-line-numbers="1-13|8-9|11-12|15-27|17-18|20-23|25-26">
+namespace acme {
+  // everything needed for program to do its thing;
+  // well-formed and error-free
+  struct sanitized_input {
+    // ...
+  };
+
+  // safety boundary; untrusted input; trusted output
+  std::optional&lt;sanitized_input&gt; digest_input(std::span&lt;char const* const&gt; args);
+
+  // free from error handling
+  std::string do_the_thing(sanitized_input in);
+}
+
+int main(int argc, char const* const* argv)
+{
+  // variable binding; type safety FTW!
+  auto const args{std::span{argv, argv+argc}};
+
+  auto const input{acme::digest_input(args)};
+  if (!input) {
+    return EXIT_FAILURE;
+  }
+
+  std::cout &lt;&lt; acme::do_the_thing(*input);
+  return EXIT_SUCCESS;
+}</code></pre>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>Attempt 1: Return Success</h4>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="|2-12|10|6|17-18|7,11|16">
+					// print file's size or return false
+					auto print_file_size(char const* filename)
+					{
+						std::ifstream in(filename, std::ios::binary | std::ios::ate);
+						if (!in) {
+							std::cerr &lt;&lt; std::format("failed to open file \"{}\"\n", filename);
+							return false;
+						}
+						
+						std::cout &lt;&lt; std::format("{}\n", in.tellg());
+						return true;
+					}
+
+					auto print_config_file_size()
+					{
+						if (!print_file_size("default.cfg")) {
+							// in this function, we know the nature of the file
+							std::cerr &lt;&lt; "failed to print the size of the config file\n";
+						}
+					}
+				</code></pre>
+        <aside class="notes">
+          <p>
+            Very basic, but it's a start.
+            Not much use though!
+          </p>
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>Attempt 2: Return Result</h4>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="|2-11|10|7">
+					// return file's size
+					auto file_size(char const* filename)
+					{
+						std::ifstream in(filename, std::ios::binary | std::ios::ate);
+						if (!in) {
+							std::cerr &lt;&lt; std::format("failed to open file \"{}\"\n", filename);
+							// how is the disappointment returned now?
+						}
+
+						return in.tellg();
+					}
+				</code></pre>
+        <aside class="notes">
+          Structured binding can help a little.
+          But unlike Python C++ only returns a maximum of one object.
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>Attempt 3: Return Result <em>or</em> Failure</h4>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="|2|10|7">
+auto file_size(char const* filename)
+-&gt; std::optional&lt;std::ifstream::pos_type&gt;
+{
+  std::ifstream in(filename, std::ios::binary | std::ios::ate);
+  if (!in) {
+    std::cerr &lt;&lt; std::format("failed to open file \"{}\"\n", filename);
+    return std::nullopt;
+  }
+
+  return in.tellg();
+}
+				</code></pre>
+        <aside class="notes">
+          `std::optional` may not be the best choice but it's readily available.
+          This is starting to get complicated!
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>Alternative: Abort on Failure</h4>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="|12|13-15|2-7|6">
+// error handler function
+template &lt;typename... args>
+[[noreturn]] void fatal(args&&... parameters)
+{
+  fmt::print(std::forward&lt;args>(parameters)...);
+  std::abort();
+}
+  
+auto main(int argc, char* argv[]) -> int
+{
+  auto const expected_num_params{3};
+  if (argc != expected_num_params) {
+    fatal(
+        "Wrong number of arguments provided. Expected={}; Actual={}\n",
+        expected_num_params, argc);
+  }
+}
+</code></pre>
+        <aside class="notes">
+          minimal; never use an assertion |
+          highly efficient in the happy path |
+          but limited, doesn't scale
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Exceptions</h3>
+        <ul>
+          <li class="fragment">Pros:
+            <ul>
+              <li>versatile/scalable</li>
+              <li>very efficient normal path</li>
+              <li>hide control flow</li>
+            </ul>
+          </li>
+          <li class="fragment">Cons:
+            <ul>
+              <li>exceedingly slow in exceptional path</li>
+              <li>not always optimal in normal path</li>
+              <li>hide control flow</li>
+            </ul>
+          </li>
+        </ul>
+        <aside class="notes">
+          Just one page, sorry.
+          It's a big subject!
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Aside: Functions Are a Track Event</h3>
+        <p class="fragment">
+          There are zero or more obstacles and one finish line.
+        </p>
+        <pre class="fragment" data-id="code-animation"><code class="cpp" data-trim data-line-numbers="1|3-7|9-13|15-16">
+					auto do_something(auto param)
+					{
+						// hurdle 1
+						auto intermediate_thing1 = get_a_thing(param)
+						if (!intermediate_thing1) {
+							return failure;
+						}
+
+						// hurdle 2
+						auto intermediate_thing2 = get_another_thing(intermediate_thing1)
+						if (!intermediate_thing2) {
+							return failure;
+						}
+
+						// finish line
+						return intermediate_thing2;
+					}
+				</code></pre>
+      </section>
+
+
+
+
+      <!-- C++ Standard Contracts -->
+
+
+
+
+
+      <section data-transition="slide-in fade-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th class="implicit">standard</th>
+              <th>end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">ISO/IEC 14882</td>
+              <td>docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">dev</td>
+              <td>user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+              <td>dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">bug</td>
+              <td>error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
+      </section>
+
+      <section data-transition="fade-in convex-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th>standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td>ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td>dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td>implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td>bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>C++ Standard</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>C++ Standard as a Contract</h3>
+        <ul>
+          <li>The exchange of promises between C++ developers and C++ implementers.</li>
+          <li>The authors of the contract are WG21 - not necessarily the providers.</li>
+          <li>Client violations are <em>bugs</em>.</li>
+          <li>Violation is UB<sup>*</sup>.</li>
+          <li>Fixing bugs is as important as fixing compile-time errors.<sup>†</sup></li>
+        </ul>
+        <p style="font-size:55%">* In a talk about run-time disappointment</p>
+        <p style="font-size:55%">† Contentious</p>
+        <aside class="notes">...so I guess we're talking about...</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Bugs!</h3>
+        <p>A program with a bug:</p>
+        <ul>
+          <li>is incorrect</li>
+          <li>contains undefined behaviour</li>
+          <li>is vulnerable</li>
+          <li>violates the <em>End User Contract</em>.</li>
+        </ul>
+        <aside class="notes">and again...</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4><a href="https://xkcd.com/435/">xkcd.com/435</a></h4>
+        <img width="1200" src="purity.png" alt="XKCD comic strip about purity" />
+        <div style="display: flex">
+          <span style="flex: 3%"></span>
+          <span style="flex: 11%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 13%">errors</span>
+          <span style="flex: 12%">errors</span>
+          <span style="flex: 10%">errors</span>
+          <span style="flex: 8%" class="witw">errors</span>
+          <span style="flex: 12%" class="witw">errors</span>
+          <span style="flex: 10%">bugs</span>
+          <span style="flex: 8%"></span>
+        </div>
+        <aside class="notes">bugs are fundamental</aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Bugs!</h3>
+        <p>Prominent C++ Standard contract violation bugs fall into two main categories</p>
+        <div style="display: flex">
+          <div class="fragment" style="flex: 48%">
+            <h3>arithmetic</h3>
+            <ul>
+              <li>divide-by-zero</li>
+              <li>overflow</li>
+            </ul>
+          </div>
+          <div style="flex: 4%">
+          </div>
+          <div class="fragment" style="flex: 48%">
+            <h3>object lifetime</h3>
+            <ul>
+              <li>null pointer dereference</li>
+              <li>dangling pointer dereference (use after free)</li>
+              <li>out-of-bounds sequence lookup (e.g. buffer overflow)</li>
+              <li>double-deletion</li>
+              <li><del>leaks</del></li>
+            </ul>
+          </div>
+        </div>
+        <aside class="notes">
+          <p>These are often mentioned in relation to vulnerabilities.</p>
+          <p>The first on each list avoids a lot of heat because it typically occurs during
+            testing.</p>
+        </aside>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="wings">
+          <p>The problem</p>
+          <p class="pwitw">The solution</p>
+        </div>
+        <div class="wings">
+          <div>
+            <pre width="800" data-id="code-animation"><code class="cpp"
+            data-trim data-line-numbers="|3">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div class="pwitw">
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h4>Example 1: Arithmetic</h4>
+        <div class="wings">
+          <p class="pwitw">The problem</p>
+          <p>The solution</p>
+        </div>
+        <div class="wings">
+          <div class="pwitw">
+            <pre data-id="code-animation"><code class="cpp">
+            int main()
+            {
+              return 1/0;
+            }</code></pre>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>flag</th>
+                  <th>effect</th>
+                  <th>when</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>-Werror</code></td>
+                  <td>treat warnings as errors</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-Wall -Wextra -pedantic</code></td>
+                  <td>gimme more warnings!</td>
+                  <td>compile</td>
+                </tr>
+                <tr>
+                  <td><code>-fsanitize=undefined</code></td>
+                  <td>trap UB</td>
+                  <td>execution</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Undefined Behavior Sanitizer (UBSan)</h3>
+        <div><a href="https://godbolt.org/z/PdT35e4Ya">
+            <img width="840" src="divide-by-zero_sanitize.png"
+              alt="A divide-by-zero bugs caught twice by tools in Compiler Explorer" />
+          </a></div>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h3>Example 2</h3>
+        <div class="wings">
+          <p>The problem</p>
+          <p class="pwitw">The solution</p>
+        </div>
+        <div class="wings">
+          <div>
+            <pre data-id="code-animation"><code class="cpp"
+              data-trim data-line-numbers="3-5|3|4|5">
+              int main()
+              {
+                  auto v{std::vector{0, 1}};
+                  v.push_back(2);
+                  fmt::print("{}\n", v[3]);
+              }</code></pre>
+          </div>
+          <div class="pwitw">
+            <p><a href="https://godbolt.org/z/sTrPT6hbo">
+                libc++: <em>-D_LIBCPP_DEBUG</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/bzdEj9ohh">
+                libstdc++: <em>-D_GLIBCXX_ASSERTIONS</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/zq8M61P5P">
+                MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
+              </a></p>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>Example 2</h3>
+        <div class="wings">
+          <p class="pwitw">The problem</p>
+          <p>The solution</p>
+        </div>
+        <div class="wings">
+          <div class="pwitw">
+            <pre data-id="code-animation"><code class="cpp" data-trim>
+          int main()
+          {
+              auto v{std::vector{0, 1}};
+              v.push_back(2);
+              fmt::print("{}\n", v[3]);
+          }</code></pre>
+          </div>
+          <div>
+            <p><a href="https://godbolt.org/z/sTrPT6hbo">
+                libc++: <em>-D_LIBCPP_DEBUG</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/bzdEj9ohh">
+                libstdc++: <em>-D_GLIBCXX_ASSERTIONS</em>
+              </a></p>
+            <p><a href="https://godbolt.org/z/zq8M61P5P">
+                MSVC: <em>/D_ITERATOR_DEBUG_LEVEL=1</em>
+              </a></p>
+          </div>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>More Flags</h4>
+        <img width="720" src="flags.png" alt="A table of helpful compiler flags from the linked-to document" />
+        <div style="font-size: 45%">
+          <a
+            href="https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations">
+            https://github.com/johnmcfarlane/papers/blob/main/cpp/contractual-disappointment.md#appendix-a---toolchain-specific-recommendations
+          </a>
+        </div>
+      </section>
+
+
+
+
+
+      <!-- C++ API Contracts -->
+
+      <section data-transition="slide-in fade-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th class="implicit">C++ API</th>
+              <th>standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td class="implicit">docs</td>
+              <td>ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td class="implicit">dev</td>
+              <td>dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td class="implicit">dev</td>
+              <td>implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td class="implicit">bug</td>
+              <td>bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">Next, lets turn to the C++ Standard.</aside>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>Contract Attributes</h3>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>C++ API</th>
+              <th class="implicit">standard</th>
+              <th class="implicit">end user</th>
+              <th class="implicit">test user</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="implicit">agreement</td>
+              <td>docs</td>
+              <td class="implicit">ISO/IEC 14882</td>
+              <td class="implicit">docs</td>
+              <td class="implicit">docs</td>
+            </tr>
+            <tr>
+              <td class="implicit">client</td>
+              <td>dev</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">user</td>
+              <td class="implicit">dev</td>
+            </tr>
+            <tr>
+              <td class="implicit">provider</td>
+              <td>dev</td>
+              <td class="implicit">implementer</td>
+              <td class="implicit">dev</td>
+              <td class="implicit">implementer</td>
+            </tr>
+            <tr>
+              <td class="implicit">violation</td>
+              <td>bug</td>
+              <td class="implicit">bug</td>
+              <td class="implicit">error</td>
+              <td class="implicit">error</td>
+            </tr>
+          </tbody>
+        </table>
+        <aside class="notes">So there's an example of a C++ API Contract violation.</aside>
+      </section>
+
+
+      <section data-transition="convex-in slide-out">
+        <h1>C++ API Contracts</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>C++ API Contracts</h3>
+        <ul>
+          <li>The exchange of promises between the developer(s) using and implementing a C++
+            API.</li>
+          <li>Again, violations are <em>bugs</em>.</li>
+          <li>Again, violation is UB.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h3>Example of Client C++ API Contract Violation #1</h3>
+        <h2>PID Controller</h2>
+      </section>
+
+      <section data-transition="fade-in slide-out" data-background-iframe="https://en.wikipedia.org/wiki/PID_controller"
+        data-background-interactive data-preload>
+        <h2 class="witw" style="color: rgb(0, 0, 0); background-color: rgba(131, 131, 131, 0.445);">
+          Example Bug: PID Controller
+        </h2>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p>&nbsp;</p>
+        <p style="color: rgb(0, 0, 0); background-color: rgba(131, 131, 131, 0.445);">
+          <a href="https://en.wikipedia.org/wiki/PID_controller">en.wikipedia.org/wiki/PID_controller</a>
+        </p>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <div>
+          <img width="960" src="pid-happy.png" alt="graph of PID controller variable in-contract" />
+        </div>
+        <h4><em>
+            Kp=.1, Ki=.5, Kd=.01, setpoint=10, pv=30
+          </em></h4>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h2>
+          Contract from PID
+        </h2>
+        <a href="https://en.wikipedia.org/wiki/PID_controller#Mathematical_form">
+          <img width="1200" src="pid.png" alt="excerpt from Wikipedia page about PID controller" />
+          <p>en.wikipedia.org/wiki/PID_controller#Mathematical_form</p>
+        </a>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h2>
+          Contract from PID
+        </h2>
+        <a href="https://en.wikipedia.org/wiki/PID_controller#Mathematical_form">
+          <img width="1200" src="pid-contracts.png"
+            alt="excerpt from Wikipedia page about PID controller with a contract highlighted" />
+          <p>en.wikipedia.org/wiki/PID_controller#Mathematical_form</p>
+        </a>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <div>
+          <img width="960" src="pid-negative.png" alt="graph of PID controller variable out-of-contract" />
+        </div>
+        <h4><em>
+            <span style="color:red">Kp=-.1</span>, Ki=.5, Kd=.01, setpoint=10, pv=30
+          </em></h4>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>PID Controller (interface)</h4>
+        <pre data-id="code-animation"><code class="cpp"
+    data-trim data-line-numbers="1|2-6|8-14|10-11|16-19|21-27|29-35|37-38">
+    namespace pid {
+      struct components {
+        double proportional;
+        double integral;
+        double derivative;
+      };
+    
+      // values kept constant throughout operation of a controller
+      struct parameters {
+        // non-negative factors used to generate PID terms
+        components k;
+    
+        double dt;
+      };
+    
+      struct state {
+        double integral;
+        double error;
+      };
+    
+      struct input {
+        // desired value
+        double setpoint;
+    
+        // actual value
+        double process_variable;
+      };
+    
+      struct result {
+        // corrective value to apply to system
+        double correction;
+    
+        // to pass in to next iteration as input::previous state
+        state current;
+      };
+    
+      [[nodiscard]] auto calculate(parameters params, state previous, input in)
+          -&gt; result;
+    }</code></pre>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h4>PID Controller (implementation)</h4>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="5-6|8-10|11|13-15|17-20|22-23|24-26">
+    #include "pid.h"
+
+    #include "pid_assert.h"
+    
+    [[nodiscard]] auto pid::calculate(parameters params, state previous, input in)
+        -&gt; result
+    {
+      PID_ASSERT(params.k.proportional &gt;= 0);
+      PID_ASSERT(params.k.integral &gt;= 0);
+      PID_ASSERT(params.k.derivative &gt;= 0);
+      PID_ASSERT(params.dt &gt; 0);
+
+      auto const error = in.setpoint - in.process_variable;
+      auto const next_integral{previous.integral + error * params.dt};
+      auto const derivative = (error - previous.error) / params.dt;
+
+      auto const terms{components{
+          .proportional = params.k.proportional * error,
+          .integral = params.k.integral * next_integral,
+          .derivative = params.k.derivative * derivative}};
+
+      auto const output = terms.proportional + terms.integral + terms.derivative;
+
+      return result{
+          output,
+          state{next_integral, error}};
+    }</code></pre>
+        <aside class="notes">
+          <p>plenty of other potential bugs, esp. to do with range</p>
+          <p>variables in steady state systems is a whole topic</p>
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Example of Client C++ API Contract Violation #2</h3>
+        <h2>(Anecdotal) UID vs Bitmap</h2>
+        <pre data-id="code-animation"><code class="cpp" data-trim data-line-numbers="1|2|4|6|7|8">
+    typedef uid = std::uint32_t;
+    constexpr auto invalid_id{uid{-1}};
+    ...
+    class bitset {
+    public:
+      bool get(std::size_t index) const {
+        if (index &gt;= size()) {
+          resize(index+1);
+        }
+      ...
+      }
+      ...
+    };</code></pre>
+      </section>
+
+      <section data-transition="slide-in convex-out">
+        <h2>UID vs Bitmap</h2>
+        <h4>Observations</h4>
+        <ul>
+          <li>Sentinel values, e.g. <code class="cpp">invalid_id</code>, are trouble!</li>
+          <li><em>Defensive</em> or <em>helpful</em> code is unwelcome complexity.</li>
+          <li>Trap bugs as they hatch.</li>
+          <li>Don't rely on <code>unsigned</code> types to help you.</li>
+        </ul>
+      </section>
+
+
+
+
+
+
+
+
+
+      <section data-transition="convex-in slide-out">
+        <h1>Test User Contract</h1>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>The Test User Contract</h3>
+        <ul>
+          <li>An exchange of promises between C++ developers and C++ tools providers.</li>
+          <li>One such tool is <code>assert</code>.</li>
+          <li>Sanitizers are newer such tools.</li>
+          <li>Authors are implementers, not the committee.</li>
+          <li>API/standard violations are <del>bugs</del> <em>errors</em>.</li>
+          <li>These errors arise at the point where a bug is discovered.</li>
+          <li>The user is a dev in need of feedback about correctness.</li>
+        </ul>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>Remember Example 1?</h3>
+        <div><a href="https://godbolt.org/z/PdT35e4Ya">
+            <img width="840" src="divide-by-zero_sanitize.png"
+              alt="A divide-by-zero bugs caught twice by tools in Compiler Explorer" />
+          </a></div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Trigger Warning: This Assertion Triggers UB!</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="1-3|5-7|9-12|14-16">
+// For testing coverage, assertions are not necessarily a concern.
+#if defined(PID_DISABLE_ASSERTS)
+#define PID_ASSERT(cond)
+
+// In debug builds, fail fast and loud when an assertion is challenged.
+#elif !defined(NDEBUG)
+#define PID_ASSERT(cond) ((cond) ? static_cast&lt;void&gt;(0) : std::terminate())
+
+// In optimised GCC builds, optimise/sanitize accordingly.
+#elif defined(__GNUC__)
+// NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+#define PID_ASSERT(cond) ((cond) ? static_cast&lt;void&gt;(0) : __builtin_unreachable())
+
+// In optimised MSVC builds, optimise/sanitize accordingly.
+#elif defined(_MSC_VER)
+#define PID_ASSERT(cond) __assume(cond)
+
+// In other optimised builds assume code is correct.
+#else
+#define PID_ASSERT(cond)
+
+#endif
+</code></pre>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Simplicity, Uniformity, Versatility</h3>
+        <ul>
+          <li class="fragment">The choice of how to handle bugs lies in the hands of the developer using the code.</li>
+          <li class="fragment">UB is a strong indicator of bugs.</li>
+          <li class="fragment">All bugs stink.</li>
+          <li class="fragment">If you are unsure about correctness (which you should be) you are taking a risk by
+            releasing your product to the client.</li>
+          <li class="fragment">If you are unsure about correctness (which you should be) you are taking a risk by
+            enabling optimisations.</li>
+          <li class="fragment">The distinction between 'user bugs', 'language UB', 'hard UB', 'time travel UB' etc. is
+            false.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h3>Bugs are Bugs</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="2-5|4|7-8">
+          // precondition: number is in range [1..26]
+          constexpr auto number_to_letter(int number)
+          {
+            return char(number - 1 + 'A');
+          }
+        
+          // signed integer overflow violates C++ Standard, is already UB
+          number_to_letter(0x7fffffff);</code></pre>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>Contracts Protect Implementation Freedom</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="2-5|4">
+          constexpr auto number_to_letter(int number)
+          {
+            constexpr auto lookup_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            return lookup_table[number - 1];
+          }
+        
+          // signed integer overflow violates C++ Standard, is already UB
+          number_to_letter(0);</code></pre>
+        <aside class="notes">
+          <p>contracts protect providers right to change implementation</p>
+          <p>Hyrum's law suggests we should fail loudly when this contract is violated</p>
+        </aside>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Strategies</h3>
+        <ul>
+          <li>Trap Enforcement Strategy - Bugs are Fatal</li>
+          <li>Non-enforcement Strategy - Struggle on</li>
+          <li>Log-And-Continue Strategy - Bugs happen</li>
+          <li>Prevention Enforcement Strategy - Bugs, what bugs?</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h2>Perceived Trade-offs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <td>correct</td>
+              <td>safe</td>
+              <td>efficient</td>
+              <td>defensive</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>'unsafe' languages, untested/legacy</td>
+              <td>😞</td>
+              <td>😞</td>
+              <td>😊</td>
+              <td>🙂</td>
+            </tr>
+            <tr>
+              <td>'safe' languages</td>
+              <td>🙂</td>
+              <td>🙂</td>
+              <td>🙂</td>
+              <td>😊</td>
+            </tr>
+            <tr>
+              <td>'unsafe' languages, tested/modern</td>
+              <td>😊</td>
+              <td>😊</td>
+              <td>😊</td>
+              <td>😃</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3><a href="https://cacm.acm.org/magazines/2014/2/171689-mars-code/fulltext">
+            Mars Code, Gerard J. Holzmann, 2014
+          </a></h3>
+        <div class="r-stack">
+          <ul class="fragment fade-out" data-fragment-index="0">
+            <li>Mars Science Laboratory, written in C</li>
+            <li>four static analysers run nightly</li>
+            <li>used dynamic thread analysis tool</li>
+            <li>warnings enabled and enforced in compiler</li>
+            <li>all mission-critical code
+              <ul>
+                <li>had to be 2% assertions</li>
+                <li>had to remain enabled after testing</li>
+              </ul>
+            </li>
+          </ul>
+          <blockquote class="fragment current-visible" data-fragment-index="0"
+            cite="https://cacm.acm.org/magazines/2014/2/171689-mars-code/fulltext">
+            A failing assertion is now tied in with the fault-protection system
+            and by default places the spacecraft into a predefined safe state
+            where the cause of the failure can be diagnosed carefully
+            before normal operation is resumed.
+          </blockquote>
+        </div>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Don't Optimise Until You Sanitize!</h3>
+        <ul>
+          <li>Test your code before you release it.</li>
+          <li>Make sure it's all tested (coverage).</li>
+          <li>Make sure it's all <em>really</em> tested (fuzzing).</li>
+          <li>Get your 9's.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in convex-out">
+        <h3>WSS - Template for C++ Projects</h3>
+        <div><a href="https://github.com/johnmcfarlane/wss/">
+            <img width="840" src="wss-page.png" alt="Screenshot of the WSS GitHub page" />
+          </a></div>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h3>Thank You</h3>
+        <p>John McFarlane</p>
+        <p>
+          <img width="80" src="Octocat.png" alt="GitHub logo" />
+          <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a>
+        </p>
+        <p>
+          <img width="80" src="2021%20Twitter%20logo%20-%20blue.png" alt="Twitter logo" />
+          <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a>
+        </p>
+        <p>&nbsp;</p>
+        <a
+          href="https://johnmcfarlane.github.io/cpponsea-2022/online.html">johnmcfarlane.github.io/cpponsea-2022/online.html</a>
+      </section>
+
+
+
+
+
+      <section data-transition="slide-in convex-out">
+        <h4>Clang-Tidy Avoids Unreachable Paths</h4>
+        <img width="720" src="unreachable-main.jpg" alt="Repurposing the This Is Fine meme for Clang-Tidy" />
+        <div style="font-size: 45%">
+          <a href="https://godbolt.org/z/oWjPfrKds">
+            godbolt.org/z/oWjPfrKds
+          </a>
+        </div>
+        <p>"Doesn't look like anything to me"</p>
+      </section>
+
+      <section data-transition="convex-in slide-out">
+        <h1>'Bonus' Material</h1>
+        <h3>Another (maybe) hour of poorly proofed slides</h3>
+      </section>
+
+
+      <section data-transition="convex-in slide-out">
+        <h2>Naming</h2>
+        <ul>
+          <li>Names matter to contracts</li>
+          <li>If the meaning of an element changes, consider changing the name</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in fade-out">
+        <h3>Bug or Error?</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="1-10|1|4,7,9|5|14-15">
+				int f(int const* p, int a, int b)
+				{
+					// Are we good?
+					int r = 0;
+					for (int i = a; i &lt;= b; i ++)
+					{
+						r += p[i];
+					}
+					return r;
+				}
+
+				int g(int const* p)
+				{
+					// Is this OK?
+					return f(p, -1, 1);
+				}</code></pre>
+        <p class="fragment">maybe a bug, maybe not</p>
+      </section>
+
+      <section data-transition="fade-in fade-out">
+        <h3>Bug?</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="1|14-15">
+					int accumulate(int const* numbers, int first, int last)
+					{
+						// Are we good?
+						int r = 0;
+						for (int i = first; i &lt;= last; i ++)
+						{
+							r += numbers[i];
+						}
+						return r;
+					}
+					
+					int g(int const* p)
+					{
+						// Is this OK?
+						return accumulate(p, -1, 1);
+					}</code></pre>
+        <p class="fragment">it's a bug!</p>
+      </section>
+
+      <section data-transition="fade-in fade-out">
+        <h3>Bug!</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="14-15|1|3">
+					int accumulate(int const* numbers, int first, int last)
+					{
+						assert(first &gt;= 0);
+						int r = 0;
+						for (int i = first; i &lt;= last; i ++)
+						{
+							r += numbers[i];
+						}
+						return r;
+					}
+					
+					int g(int const* p)
+					{
+						// Bug: -1 isn't in sequence that starts with p
+						return accumulate(p, -1, 1);
+					}</code></pre>
+        <p class="fragment">but...</p>
+      </section>
+
+      <section data-transition="fade-in fade-out">
+        <h3>Bug?</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="1|14-15">
+					int sample(int const* center, int first, int last)
+					{
+						// Are we good?
+						int r = 0;
+						for (int i = first; i &lt;= last; i ++)
+						{
+							r += center[i];
+						}
+						return r;
+					}
+					
+					int g(int const* p)
+					{
+						// Is this OK?
+						return sample(p, -1, 1);
+					}</code></pre>
+        <p class="fragment">what about now?</p>
+      </section>
+
+      <section data-transition="fade-in slide-out">
+        <h3>No Bug!</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="14-15|1|3">
+					int sample(int const* center, int first, int last)
+					{
+						// First might be anything.
+						int r = 0;
+						for (int i = first; i &lt;= last; i ++)
+						{
+							r += center[i];
+						}
+						return r;
+					}
+					
+					int g(int const* p)
+					{
+						// center is not necessarily the start of the sequence.
+						return sample(p, -1, 1);
+					}</code></pre>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Naming</h3>
+        <ul>
+          <li>Problem:
+            <ul>
+              <li>Two functions use the same algorithm</li>
+              <li>But they have different contracts</li>
+              <li>How do you test different contracts from the same function?</li>
+            </ul>
+          </li>
+          <li>Solution:
+            <ul>
+              <li>Different functions?</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Naming</h3>
+        <pre data-id="code-animation"><code class="cpp"
+					data-trim data-line-numbers="1-9|11-14|13|16-20|18-19">
+int accumulate_neighborhood(int const* position, int offset_first, int offset_last)
+{
+  int r = 0;
+  for (int i = offset_first; i &lt;= offset_last; i ++)
+  {
+    r += position[i];
+  }
+  return r;
+}
+
+int sample(int const* center, int first, int last)
+{
+  return accumulate_neighborhood(center, first, last);
+}
+
+int accumulate_subrange(int const* numbers, int first, int last)
+{
+  assert(first &gt;= 0);
+  return accumulate_neighborhood(numbers, first, last);
+}</code></pre>
+        <p class="fragment">what about now?</p>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>Q: My project doesn't use analysis tools or modern, quality toolchains.</li>
+          <li>A: Sorry about that. Consider running tests against nice tools.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>Q: A million things would break if I enabled checks.</li>
+          <li>A: Disable checks and exclude all files. Then slowly fix things one check/file at a time
+            until all the checks you want are applied to all files.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>Q: My project doesn't test the code.</li>
+          <li>A: You're problems are beyond the specialty of this doctor.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>Q: My dependencies trigger warnings/errors</li>
+          <li>A: Think about the contract between you and your dependency provider; try <code>-isystem</code>.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>Q: This stuff gets hard in big, old projects maintained by big, young teams</li>
+          <li>A: Agreed. There is no silver bullet.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Surgery is Now Open</h3>
+        <ul>
+          <li>
+            Q: My project doesn't need to be safe/secure. I don't need to worry about this stuff, right?
+          </li>
+          <li>A: ...</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>On Correctness</h3>
+        <ul>
+          <li>Correctness is a consequence of generally-good practices:
+            <ul>
+              <li>using modern features (std::print, std::optional, std::vector, owning pointers)</li>
+              <li>testing code</li>
+              <li>using tools</li>
+              <li>healthy team dynamics (mentoring, pairing, reviewing)</li>
+              <li>avoiding accidental complexity</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>On Correctness</h3>
+        <ul>
+          <li>Correctness gives you
+            <ul>
+              <li>quality - your software works better sooner</li>
+              <li>productivity - less time wasted testing changes, debugging, fixing</li>
+              <li>knowledge - tools teach you how to avoid mistakes</li>
+              <li>safety & security guarantees</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>In Defence of Simplicity</h3>
+        <ul>
+          <li>Keep all your software simple and correct, including:
+            <ul>
+              <li>Functional (production) code</li>
+              <li>Automated tests</li>
+              <li>Documentation</li>
+              <li>Build system</li>
+            </ul>
+          </li>
+          <li>Avoid control flow, especially <code>if</code> statements</li>
+          <li>Don't over-engineer or write code you don't need (YAGNI)</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Coding Standards</h3>
+        <ul>
+          <li>Commit to modern practices and conventions, e.g.:
+            <ul>
+              <li>C++ Core Guidelines</li>
+              <li>Modern CMake</li>
+              <li>Linux-flavour Git commit descriptions</li>
+            </ul>
+          </li>
+          <li>Enforce with tools, tools, tools!</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in slide-out">
+        <h3>Keep Your Friends Close; Keep Your Errors Closer</h3>
+        <ul>
+          <li>Minimise distance (in space and time) between
+            bug location (source code that needs fixing) and
+            point of failure (crash, trap, unwanted behaviour)</li>
+          <li>Being explicit and strict about C++ API Contracts helps this enormously</li>
+          <li>Accordingly assertions help. Language feature will help too.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+
+  <script src="dist/reveal.js"></script>
+  <script src="plugin/notes/notes.js"></script>
+  <script src="plugin/markdown/markdown.js"></script>
+  <script src="plugin/highlight/highlight.js"></script>
+  <script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+      slideNumber: true,
+
+      width: 1200,
+      height: 700,
+
+      hash: true,
+
+      // Learn about plugins: https://revealjs.com/plugins/
+      plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+  </script>
+</body>
+
+</html>
