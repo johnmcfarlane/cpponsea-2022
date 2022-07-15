@@ -32,7 +32,8 @@
           href="https://johnmcfarlane.github.io/cpponsea-2022/online.html">johnmcfarlane.github.io/cpponsea-2022/online.html</a>
         </p>
         <h4>2022-07-15</h4>
-        <h3><a href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">C++ on Sea</a></h3>
+        <h3><a href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp-online.html">C++ on Sea</a>
+        </h3>
       </section>
 
       <section data-transition="convex-in slide-out">
@@ -43,7 +44,7 @@
         <p>&nbsp;</p>
       </section>
 
-      <section data-transition="slide-in convex-out">
+      <section data-transition="slide-in slide-out">
         <h3>Background</h3>
         <p>
           <span class="fragment">Work: games, servers, automotive</span>
@@ -60,7 +61,34 @@
         </aside>
       </section>
 
-      <section data-transition="convex-in slide-out">
+      <section data-transition="slide-in slide-out">
+        <h3>Takeaways</h3>
+        <ul>
+          <li>Contracts are everywhere in collaborative software development.</li>
+          <li>Understanding contracts allows for safe, efficient, productive coding.</li>
+          <li>Not all contracts are well understood.</li>
+        </ul>
+      </section>
+
+      <section data-transition="slide-in convex-out">
+        <h3>Hot Take</h3>
+        <ul>
+          <li>When used in combination with
+            <ul>
+              <li>contracts;</li>
+              <li>modern coding standards and features; and</li>
+              <li>modern tools and testing practices</li>
+            </ul>
+            C++ is
+          <li>safer,</li>
+          <li>higher-quality, and</li>
+          <li>faster</li>
+          than code written in 'safe' languages
+          </li>
+        </ul>
+      </section>
+
+      <!-- <section data-transition="convex-in slide-out">
         <h3>Useful Links</h3>
         <ul>
           <li>slides: <a
@@ -68,17 +96,14 @@
           </li>
           <li>code: <a href="https://github.com/johnmcfarlane/wss/">github.com/johnmcfarlane/wss</a></li>
           <li>talk: <a
-              href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html">cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp.html</a>
+              href="https://cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp-online.html">cpponsea.uk/2022/sessions/contractual-disappointment-in-cpp-online.html</a>
           </li>
           <li>essay: <a
               href="https://github.com/johnmcfarlane/papers/blob/main/cpp">github.com/johnmcfarlane/papers/blob/main/cpp</a>
           </li>
           <li>rant: <a href="https://twitter.com/JSAMcFarlane">twitter.com/JSAMcFarlane</a></li>
         </ul>
-      </section>
-
-      <section data-transition="fade-in fade-out" data-background="title.png">
-      </section>
+      </section> -->
 
       <section data-transition="convex-in slide-out">
         <h1>Definitions</h1>
@@ -537,9 +562,9 @@
         </div>
       </section>
 
-      <section data-transition="convex-in slide-out">
+      <section data-transition="slide-in slide-out">
         <h3>Error Handling</h3>
-        <p>Program should handle <em>client violations</em> of the <em>End User Contract</em></p>
+        <p>Program should do two things:</p>
         <div style="display: flex">
           <div class="fragment" style="flex: 49%">
             <h3>halt</h3>
@@ -565,17 +590,18 @@
       </section>
 
       <section data-transition="slide-in slide-out">
-        <h3>$1,000,000 Question</h3>
-        <p>
-          How does your program handle errors?
-        </p>
-      </section>
-
-      <section data-transition="slide-in slide-out">
-        <h3>$1,000,000 Answer</h3>
-        <p>
-          It depends.
-        </p>
+        <div>
+          <h3>$1,000,000 Question: </h3>
+          <p class="fragment">
+            How does your program handle errors?
+          </p>
+        </div>
+        <div>
+          <h3 class="fragment">$1,000,000 Answer: </h3>
+          <p class="fragment">
+            It depends.
+          </p>
+        </div>
       </section>
 
       <section data-transition="slide-in slide-out">
@@ -889,7 +915,7 @@ auto main(int argc, char* argv[]) -> int
         <h3>C++ Standard as a Contract</h3>
         <ul>
           <li>The exchange of promises between C++ developers and C++ implementers.</li>
-          <li>The authors of the contract are WG21 - not necessarily the providers.</li>
+          <!-- <li>The authors of the contract are WG21 - not necessarily the providers.</li> -->
           <li>Client violations are <em>bugs</em>.</li>
           <li>Violation is UB<sup>*</sup>.</li>
           <li>Fixing bugs is as important as fixing compile-time errors.<sup>†</sup></li>
